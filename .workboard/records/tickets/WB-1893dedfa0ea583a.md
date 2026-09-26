@@ -9,13 +9,15 @@ id: WB-1893dedfa0ea583a
 kind: ticket
 status: backlog
 createdAt: 2026-09-26T14:40:23.471Z
-updatedAt: 2026-09-26T14:40:23.471Z
+updatedAt: 2026-09-26T21:38:00.244Z
 author:
   name: Codex workflow trial
   kind: agent
 number: 3
 order: 1790433623474
 reviewedRules: {}
+attachments:
+  - image-8a5573e72e5dd781
 ---
 ## Problem
 Tickets now display simple numbers such as #0, but parent and dependency validation compares incoming links directly against internal WB identifiers. The main ticket argument can use a number while links still require looking up the internal identifier.
@@ -37,3 +39,4 @@ src/cli.ts: create --parent and update --patch.
 
 ## Review evidence expected
 Describe the before/after behavior, list tests run and their results, and identify any limits. Submit to Review rather than Done.
+[![image.png](/api/images/image-8a5573e72e5dd781/base)](#image=image-8a5573e72e5dd781)

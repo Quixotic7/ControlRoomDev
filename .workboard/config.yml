@@ -1,6 +1,6 @@
 schema: 1
 projectId: project-da87c77c233354df
-name: kanbantool
+name: Control Room Dev
 columns:
   - id: backlog
     name: Backlog
@@ -22,3 +22,22 @@ shortcut:
   key: 1
   modifiers: 6400
   label: Double-tap Option / Alt
+views:
+  - id: board
+    name: Board
+    layout: board
+    filter: ""
+    groupBy: parent
+    sort: priority
+  - id: table
+    name: Table
+    layout: table
+    filter: ""
+    groupBy: none
+    sort: number
+  - id: view-3
+    name: View 3
+    layout: table
+    filter: ""
+    groupBy: none
+    sort: number
