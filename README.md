@@ -1,6 +1,6 @@
 # ControlRoom development board
 
-This local-only repository tracks the tickets, decisions, and history for developing ControlRoom. The tool itself lives in the `ControlRoom/` submodule, which is the public repository pushed to <https://github.com/Quixotic7/ControlRoom>. This outer repository has no remote.
+This repository (<https://github.com/Quixotic7/ControlRoomDev>) tracks the tickets, decisions, and history for developing ControlRoom. The tool itself lives in the `ControlRoom/` submodule, a separate repository pushed to <https://github.com/Quixotic7/ControlRoom>.
 
 ```text
 .workboard/     board records (tracked here) and local-only state (ignored)
@@ -15,9 +15,9 @@ workboard       runs ControlRoom/ against this board
 ./workboard list
 ```
 
-Always go through `./workboard` here. Running `ControlRoom/workboard` directly treats the submodule as its own project and opens an empty board.
+Because this folder has a board, the tool also finds it from inside the submodule: `ControlRoom/workboard` and agents working in `ControlRoom/` use this same board.
 
-Coding agents follow [ControlRoom/AGENT_GUIDE.md](ControlRoom/AGENT_GUIDE.md), using `./workboard` from this folder as the command.
+Coding agents follow [ControlRoom/AGENT_GUIDE.md](ControlRoom/AGENT_GUIDE.md), using `./workboard` from this folder (or `ControlRoom/workboard`) as the command.
 
 ## Commit and push
 
@@ -25,7 +25,9 @@ Tool changes are committed and pushed inside `ControlRoom/`. The outer repositor
 
 ```sh
 git -C ControlRoom commit -am "…" && git -C ControlRoom push
-git add .workboard ControlRoom && git commit -m "…"
+git add .workboard ControlRoom && git commit -m "…" && git push
 ```
 
-A fresh setup needs `git submodule update --init`, then the build steps in [ControlRoom/README.md](ControlRoom/README.md).
+Push `ControlRoom` first, so the commit this repository points to exists on GitHub.
+
+A fresh setup: `git clone --recurse-submodules https://github.com/Quixotic7/ControlRoomDev.git`, then follow the build steps in [ControlRoom/README.md](ControlRoom/README.md) inside `ControlRoom/`.
