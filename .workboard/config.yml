@@ -1,0 +1,24 @@
+schema: 1
+projectId: project-da87c77c233354df
+name: kanbantool
+columns:
+  - id: backlog
+    name: Backlog
+    role: backlog
+  - id: selected
+    name: Selected For Development
+    role: selected
+  - id: progress
+    name: In Progress
+    role: progress
+  - id: review
+    name: Review
+    role: review
+  - id: done
+    name: Done
+    role: done
+shortcut:
+  mode: double-alt
+  key: 1
+  modifiers: 6400
+  label: Double-tap Option / Alt

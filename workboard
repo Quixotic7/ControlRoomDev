@@ -1,0 +1,4 @@
+#!/bin/sh
+# Runs the ControlRoom tool from the submodule against this folder's board.
+HERE="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+exec "$HERE/ControlRoom/workboard" --project "$HERE" "$@"

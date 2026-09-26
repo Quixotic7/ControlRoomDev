@@ -1,0 +1,6 @@
+.DS_Store
+# Local-only board state: images, service token, claims, preferences, drafts.
+.workboard/assets/
+.workboard/.local/
+.workboard/tool/
+*.tmp
