@@ -1,0 +1,29 @@
+---
+id: comment-2e3b2cb04741640e
+ticket: WB-41b69e7cec0239ef
+actor:
+  name: Codex fixes
+  kind: agent
+kind: review
+at: 2026-09-27T02:29:29.036Z
+resolved: false
+---
+## Work completed
+
+Changed successful native capture delivery to save silently to the active project without opening a browser or annotation editor. The existing live library refresh receives the image, which can be opened later. Draft recovery and failure handling remain intact. Rebuilt and restarted the helper; macOS runtime status now reports Input Monitoring required, so the double-Option live acceptance check needs the user to re-enable that permission.
+
+## What to review
+
+1. In Control Room Settings use Show current capture app to identify this project’s WorkboardCapture.app. Re-enable it in macOS System Settings → Privacy & Security → Input Monitoring, then relaunch the companion. If a stale permission entry remains, remove/re-add the exact app as described in Settings.
+2. Focus the intended project, switch to another app, double-tap Option and capture a region. Focus should remain in that app; no browser or editor should open.
+3. Return to Screenshots: the new capture should be present and open normally without refreshing the page. Repeat with Escape and confirm no completed screenshot is added. Screen Recording may also request access; its preflight result is advisory.
+
+## Verification
+
+Production build and TypeScript checks passed; 47 core/model/integration tests and all 32 Chromium browser workflows passed. The rebuilt native companion passed the double-Option detector and shortcut-registration self-test. New browser coverage is in tests/browser/review-round-two.spec.ts and updated screenshot deletion coverage. Menus, screenshot autocomplete and ticket images were visually inspected. Tests use disposable projects and did not delete real screenshots. See VALIDATION.md. Changes are local and uncommitted.
+
+Branch: main
+
+## Exceptions and limitations
+
+Interactive double-Option capture remains unverified. After rebuilding/restarting, the helper reports input-monitoring-required. The user must re-enable macOS Input Monitoring for Workboard Capture before testing; Screen Recording preflight also reports false but is advisory.
