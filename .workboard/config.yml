@@ -2,6 +2,9 @@ schema: 1
 projectId: project-da87c77c233354df
 name: Control Room Dev
 columns:
+  - id: stage-muj0to06
+    name: Concept
+    role: backlog
   - id: backlog
     name: Backlog
     role: backlog
@@ -11,17 +14,15 @@ columns:
   - id: progress
     name: In Progress
     role: progress
+  - id: stage-muj08yzt
+    name: Failed Review
+    role: progress
   - id: review
     name: Review
     role: review
   - id: done
     name: Done
     role: done
-shortcut:
-  mode: double-alt
-  key: 1
-  modifiers: 6400
-  label: Double-tap Option / Alt
 views:
   - id: board
     name: Board
@@ -41,3 +42,8 @@ views:
     filter: ""
     groupBy: none
     sort: number
+shortcut:
+  mode: double-alt
+  key: 1
+  modifiers: 6400
+  label: Double-tap Option / Alt
