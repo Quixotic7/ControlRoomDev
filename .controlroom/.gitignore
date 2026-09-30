@@ -1,0 +1,4 @@
+assets/
+.local/
+*.tmp
+tool/

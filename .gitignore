@@ -3,4 +3,8 @@
 .workboard/assets/
 .workboard/.local/
 .workboard/tool/
+.controlroom/assets/
+.controlroom/.local/
+.controlroom/tool/
+.controlroom-backups/
 *.tmp

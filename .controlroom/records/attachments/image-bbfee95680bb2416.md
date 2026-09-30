@@ -1,0 +1,15 @@
+# image.png
+
+Image: image-bbfee95680bb2416 (1168 × 408), SHA-256 3d0fb711834f0a2123defeeb421b5ec6fc2510ebd5be7cae35be6225847f1ac5
+
+## A1 — note-4a261f69-2da8-4a4a-9196-034f7e1e7799
+
+(No written instruction)
+
+Type: draw; normalized region: (0.11878453038674033, 0.3384907612931294) → (0.1252302025782689, 0.3622151658822674).
+
+## A2 — note-e5d39b4d-6f1b-405d-9dc0-0743c2119bfe
+
+(No written instruction)
+
+Type: draw; normalized region: (0.44843462246777166, 0.3516709860648727) → (0.3996316758747698, 0.3516709860648727).
