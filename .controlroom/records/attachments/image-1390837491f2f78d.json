@@ -11,5 +11,10 @@
   "trashedBy": {
     "name": "You",
     "kind": "human"
+  },
+  "permanentlyDeletedAt": "2026-09-30T18:41:01.957Z",
+  "permanentlyDeletedBy": {
+    "name": "You",
+    "kind": "human"
   }
 }

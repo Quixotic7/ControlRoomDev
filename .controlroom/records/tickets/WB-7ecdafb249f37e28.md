@@ -1,12 +1,12 @@
 ---
 parent: null
 title: Need a quick board filter for approved vs not approved tickets
-status: backlog
+status: review
 schema: 1
 id: WB-7ecdafb249f37e28
 kind: ticket
 createdAt: 2026-09-27T06:05:52.916Z
-updatedAt: 2026-09-27T06:21:56.701Z
+updatedAt: 2026-09-30T19:28:37.220Z
 author:
   name: You
   kind: human
@@ -18,6 +18,57 @@ labels:
   - ui
   - filters
   - approval
+scopeApproved: true
+scopeApprovedAt: 2026-09-30T16:01:10.237Z
+scopeApprovedBy:
+  name: You
+  kind: human
+progressStartedAt: 2026-09-30T19:02:39.818Z
+handoff: "Added Approval filter to board/table: All, Approved, Not approved and honest
+  Custom state. Preserves unrelated query terms and per-view saved filters.
+  Explicit scope approval stays separate from inherited permission. Filtering
+  never edits tickets. Decisions: none."
+evidence: "Merged main 52a37b4 and installed in Dev (4173) and Juice Lab (4280).
+  Production build/TypeScript passed. Integrated verification: 35 browser checks
+  and 20 focused core checks passed, covering real process identity/start/stop,
+  activity service outage, reduced motion, status layout desktop/narrow/retro
+  plus concurrent draft preservation, playbook copy/portability, approval
+  query/saved views, native dragging and scrolling. Both services return health
+  200 and exact installed/served artifacts match source dist. Record, attachment
+  and saved-network/settings preservation checks passed. Logs:
+  /private/tmp/cr-final-build.log, cr-final-browser.log, cr-updates-browser.log,
+  cr-updates-unit.log, cr-updates-activity.log, cr-overlap-browser.log,
+  cr-overlap-core.log. Duplicate relationship core checks also passed (7). No
+  Git push."
+exceptions: ""
+reviewVerificationAt: 2026-09-30T19:28:37.039Z
+reviewInstructions: Try the Approval control in Board and Table, combine with a text/label query,
+  save a view and reload. Approved means that ticket’s own checkbox; a child
+  authorized only through a parent belongs under Not approved. Confirm the
+  control and typed query stay synchronized.
+manualReviewRequired: true
+branch: main
+commits:
+  - 1cf98d3
+  - 279b198
+  - 796bba5
+verification:
+  command: npm run build; focused core and integrated Playwright suites
+  exitCode: 0
+  output: "Merged main 52a37b4 and installed in Dev (4173) and Juice Lab (4280).
+    Production build/TypeScript passed. Integrated verification: 35 browser
+    checks and 20 focused core checks passed, covering real process
+    identity/start/stop, activity service outage, reduced motion, status layout
+    desktop/narrow/retro plus concurrent draft preservation, playbook
+    copy/portability, approval query/saved views, native dragging and scrolling.
+    Both services return health 200 and exact installed/served artifacts match
+    source dist. Record, attachment and saved-network/settings preservation
+    checks passed. Logs: /private/tmp/cr-final-build.log, cr-final-browser.log,
+    cr-updates-browser.log, cr-updates-unit.log, cr-updates-activity.log,
+    cr-overlap-browser.log, cr-overlap-core.log. Duplicate relationship core
+    checks also passed (7). No Git push."
+  at: 2026-09-30T19:28:37.039Z
+  cwd: /Volumes/Q7Media-2025/Projects/Github/kanbantool/ControlRoom
 ---
 ## Backlog refinement
 

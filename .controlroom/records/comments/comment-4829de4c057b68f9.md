@@ -6,7 +6,11 @@ actor:
   kind: agent
 kind: question
 at: 2026-09-30T12:29:11.977Z
-resolved: false
+resolved: true
+resolvedBy:
+  name: Codex chat orchestrator
+  kind: agent
+resolvedAt: 2026-09-30T19:28:34.362Z
 ---
 ## Managed run needs you
 

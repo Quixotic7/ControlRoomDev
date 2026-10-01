@@ -1,0 +1,20 @@
+{
+  "id": "image-fc51e0b2735e75fe",
+  "name": "Screenshot 2026-09-30T18:40:49Z",
+  "hash": "5bfe854f6b8aaa35c187330d2eeda8a40639022e61e577816cb7d3f412a7bfbe",
+  "width": 638,
+  "height": 427,
+  "mime": "image/png",
+  "annotations": [],
+  "createdAt": "2026-09-30T18:40:49.363Z",
+  "trashedAt": "2026-09-30T18:40:55.862Z",
+  "trashedBy": {
+    "name": "You",
+    "kind": "human"
+  },
+  "permanentlyDeletedAt": "2026-09-30T18:41:01.971Z",
+  "permanentlyDeletedBy": {
+    "name": "You",
+    "kind": "human"
+  }
+}
