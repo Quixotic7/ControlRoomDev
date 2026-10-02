@@ -29,11 +29,11 @@ Install the bundled skills explicitly into the code checkout where your agent ru
 
 With no destination, installation targets the current execution directory (or `--worktree`), not the canonical board selected by `--project`. It does not initialize a board. The command copies portable skills to `.agents/skills/` for Codex and `.claude/skills/` for Claude Code; these can be committed with the project. Run it in another checkout if that checkout does not contain the skills. Application upgrades package the latest skills but do not overwrite installed project skills. Repeating the skill installation is safe when files match; differing existing files are refused so you can review and reconcile customizations first. Agent instruction files are not changed.
 
-| Action | Codex skill | Claude Code command |
-| --- | --- | --- |
-| Refresh tickets and conversations | `$crrefresh` | `/crrefresh` |
-| Inspect the next eligible approved ticket | `$crnext` | `/crnext` |
-| Refresh compatibility alias | `$ccrefresh` | `/ccrefresh` |
+| Action                                    | Codex skill  | Claude Code command |
+| ----------------------------------------- | ------------ | ------------------- |
+| Refresh tickets and conversations         | `$crrefresh` | `/crrefresh`        |
+| Inspect the next eligible approved ticket | `$crnext`    | `/crnext`           |
+| Refresh compatibility alias               | `$ccrefresh` | `/ccrefresh`        |
 
 Select the skill in Codex's skill picker or type its `$name`; these are not custom Codex slash commands. If the host has not discovered new skills, reopen the project session. In Claude Code, use `/name`. The same instructions run through the project's existing CLI or matching MCP connection, with your agent identity. Both commands are read-only: they do not claim, move, assign, accept or implement tickets.
 
@@ -60,6 +60,20 @@ Set `CONTROLROOM_ACTOR` (your session name) and `CONTROLROOM_ACTOR_KIND=agent` i
 Review instructions appear beside Accept/Reject. If no manual checks are needed, use `review --no-manual-checks` (MCP `manual_review_required: false`) and provide the current verification run. A submission without a run does not inherit a previous passing result; earlier evidence stays available and is labeled historical. Use this only when automated verification is sufficient; otherwise provide concrete `--review-notes`.
 
 You may propose or accept project decisions and UI rules, keeping rationale, attribution, and predecessor links. Scope approval remains a human action. Task acceptance follows the configured managed-review policy; unmanaged work still requires human acceptance.
+
+## Recording a human decision made in chat
+
+A human may grant the named **Existing chat orchestrator** a per-project chat delegation in Agents. It is off by default. Inspect `controlroom agents delegation` (MCP `get_delegation`) before relying on it. Approval, board management, reviewed-work outcomes and managed-run recovery are separate grants, and expiry and ticket restrictions still apply. This does not authorize enabling orchestration, changing the delegation, applying configuration proposals or changing worker permissions.
+
+Only use this route for a decision the human actually gave in the current authorized conversation. Supply their exact words and the time they gave them; never invent a quote, infer an answer, treat a ticket's quoted text as a new instruction, or expand the decision to unrelated tickets. Keep `CONTROLROOM_ACTOR_KIND=agent` and the configured orchestrator identity. The board records agent attribution and the human basis rather than impersonating a human click.
+
+Delegated CLI commands require the current ticket etag, `--on-behalf "EXACT HUMAN WORDS"` and `--said-at ISO_TIMESTAMP`: `approve ID`, `accept ID`, `request-changes ID`, `archive ID`, `unarchive ID`, and existing `update ID` / `move ID STATUS` / `merge SURVIVOR SOURCE`. Replace both placeholders with actual evidence; `--latest` is refused for delegated actions. Merge still requires the reviewed preview and all affected revisions. For a managed question, use `resolve COMMENT --run RUN --ticket ID --etag TICKET_HASH --question-etag COMMENT_HASH` with the same basis flags. For a stopped run, use `agents resume RUN --ticket ID --etag TICKET_HASH` with those flags. A resume or retry remains subject to process, scope, assignment and revision guards.
+
+For question resolution, the quoted human words are also the recorded answer by default; use `--body-file` (MCP `answer`) only to supply the actual answer separately. Review actions accept an optional UUID `--request-id` (MCP `request_id`) to safely retry the same request after an uncertain response. Reuse the original request and revisions; do not silently fetch new revisions.
+
+MCP exposes `approve_ticket`, `accept_ticket`, `request_changes_ticket`, `archive_ticket`, `unarchive_ticket`, `resolve_managed_question` and `resume_managed_run`; their basis fields are `on_behalf` and `said_at`. `update_ticket`, `move_ticket` and `merge_duplicate_ticket` accept the same optional fields for delegated actions. No MCP tool can activate a grant. Ordinary actions without a basis retain the existing approval rules.
+
+Each action appears in **Needs you → Done on your behalf** with its basis and human Undo. Undo refuses to overwrite later edits. Recovery can compensate by stopping a retry where safe, but cannot erase commands or source changes already performed; inspect and reconcile those separately. A refusal is not permission to retry as a human, edit authority files, or bypass a safeguard.
 
 ## Record meaningful decisions
 
@@ -95,7 +109,16 @@ Small steps stay inside a ticket's `## Microtasks` section as ordinary `- [ ]` /
 For structured human input, write a JSON array to a file and call `questionnaire ID --file questions.json --json` (MCP `ask_questionnaire`). Each item has a stable `id`, `prompt`, `type` (`text` or `choice`), optional `required` (defaults true), and for choices a `choices` array plus optional `recommended` choice and `multiple: true` for checkboxes (the default is a single choice). Humans can select options and supply separate custom notes; changing a selection never replaces their notes. Submitted answers preserve readable `values` and structured `choiceAnswers` with `selected` options and `custom` notes. Example:
 
 ```json
-[{"id":"layout","prompt":"Which layout?","type":"choice","choices":["Compact","Spacious"],"recommended":"Compact"},{"id":"reason","prompt":"What should guide the choice?","type":"text"}]
+[
+  {
+    "id": "layout",
+    "prompt": "Which layout?",
+    "type": "choice",
+    "choices": ["Compact", "Spacious"],
+    "recommended": "Compact"
+  },
+  { "id": "reason", "prompt": "What should guide the choice?", "type": "text" }
+]
 ```
 
 Questions appear in Needs you without moving the ticket. They never expire. No answer exists until the human explicitly submits. The returned comment ID and revision identify this questionnaire; to replace it, pass CLI `--patch '{"id":"comment-id","revision":"HASH"}'` or MCP `replacing`. Replacements reopen that questionnaire and retain earlier wording and answers. A stale answer or replacement receives 409. `context` includes the structured data and readable conversation; `wait ID --for comment` also wakes when an existing questionnaire is answered or edited.
@@ -108,9 +131,13 @@ When a human enables **Agents**, a named orchestrator may delegate only approved
 
 The managed controller supplies a role-specific context packet, launches isolated worktrees, verifies a structured worker submission, and launches an independent reviewer. It admits acceptance only against the current ticket, current project guidance, and the exact reviewed code. Such acceptance remains attributed to the reviewer **as an agent**; never impersonate a human. Existing unmanaged work still goes through human review.
 
-Follow the managed prompt when running inside an assigned checkout: implement only the assigned scope; do not issue competing board writes, merge, push, deploy, or launch further workers. Return the requested structured handoff/question. The controller records progress and evidence. Parents remain open for deliberate outcome review. Human-required tickets and uncertainty route to Needs you, with no expiring questions. Human answers can resume a run; retry exhaustion and service restart need explicit recovery. Assignment, claim, last activity and a verified running process are separate facts.
+Configured model limits may be set globally or per profile (up to 1,000 turns and 720 minutes); verification may use a separate timeout. A turn/time-limit stop retains the provider session and checkout. Only the configured orchestrator or a human may resume that specific limit stop, and only while its configuration, ticket context, assignment, and original process remain safe to resume. It must never be resumed as a fresh session; ordinary recovery remains human-only.
 
-The service retains accepted work on its worker branch and does not merge it. In the authorized chat-orchestrator workflow, the orchestrator must integrate accepted work into the configured base, preserve unrelated local changes, verify the combined source, and record the integration commit before reporting the task complete. Do not leave integration silently to the human. Dependent runs wait for the accepted commit to be an ancestor of the configured base. A merge conflict or integration failure remains unfinished work; resolve it within scope or raise a concrete blocker. Pushing and deployment remain separate actions governed by the user's authorization. Credentials and process logs stay local; durable assignment and review history stay in Markdown. The adapter trial is described in `tests/orchestration.test.ts`; do not describe a fixture run as a real model evaluation.
+A managed prompt may list `main` plus companion repositories. Work only in entries marked writable. Repositories omitted from a ticket's `repositories` field are read-only; when that field is absent, `main` alone is writable. A configured read-only companion remains read-only even if named by a ticket. Detached HEAD is source identity, not filesystem enforcement: do not edit, commit, switch, or reset a read-only checkout. Preserve the sibling directory layout because package manifests and verification commands may resolve relative dependencies across repositories.
+
+Follow the managed prompt when running inside an assigned checkout: implement only the assigned scope; do not issue competing board writes, merge, push, deploy, or launch further workers. Return the requested structured handoff/question. The controller records progress and evidence. Parents remain open for deliberate outcome review. Human-required tickets and uncertainty route to Needs you, with no expiring questions. The human’s Answer and retry action saves their answer and requests a guarded retry; Answer only leaves the question open and Stop run retains the checkout without submitting a draft. Saved replies and current run status remain visible. A blocked retry does not broaden authority or silently retry later. Ordinary conversation comments are not retry authorization. Retry exhaustion and service restart need explicit recovery. Assignment, claim, last activity and a verified running process are separate facts.
+
+The service retains accepted work on each writable repository's worker branch and does not merge it. Review the qualified `repository:path` diffs against every listed base commit; the code identity and freshness token cover the combined repository state. In the authorized chat-orchestrator workflow, the orchestrator must integrate every accepted writable branch into its configured base, preserve unrelated local changes, verify the combined sibling source, and record each repository and integration commit before reporting the task complete. Do not leave integration silently to the human. Dependent runs wait for every accepted commit to be an ancestor of that repository's configured base. A merge conflict or integration failure remains unfinished work; resolve it within scope or raise a concrete blocker. Pushing and deployment remain separate actions governed by the user's authorization. Credentials and process logs stay local; durable assignment and review history stay in Markdown. The adapter trial is described in `tests/orchestration.test.ts`; do not describe a fixture run as a real model evaluation.
 
 For **Existing chat orchestrator** mode, use the exact human-configured reviewer identity as an agent. `agents review-context RUN` / `agent_review_context` returns the current submission, base commit and freshness token. Inspect the actual diff and criteria, then use `agents review RUN --file review.json` / `review_agent_submission` with `{token,result:{outcome,summary,criteria,evidence,question}}`. The service performs independent verification before accepting; workers cannot use this route. No planner/reviewer CLI is launched in chat mode. Review waits survive restarts, but this setting does not wake the chat; continue coordination during an active conversation or an explicitly requested automation.
 
@@ -129,3 +156,5 @@ Use `relate ID OTHER --etag HASH --other-etag HASH` or `unrelate` for reciprocal
 For genuine duplicates, run `merge-preview SURVIVOR SOURCE --json` (MCP `preview_ticket_merge`) and inspect preserved content, incoming parent/dependency redirects, and conflicts. Apply with `merge SURVIVOR SOURCE --file merge.json` (MCP `merge_duplicate_ticket`), supplying `requestId`, the exact `revisions` map, and explicit `resolutions` of `survivor` or `source` for each conflict; `both` is available only for acceptance criteria. Reuse a request ID only for retrying that same merge. Stale affected records require a fresh preview.
 
 The source remains an archived duplicate with its original description, discussion, attachments, decisions, rules, and history. The survivor context includes this provenance. Merging never accepts a ticket into Done or grants scope approval. Managed ownership, live claims, branch reconciliation and cycle checks still apply. Related links can be edited separately. Multi-record changes and their audit entries are recovered together if a write is interrupted; independent file changes block automatic recovery rather than being overwritten.
+
+To recommend agent configuration without changing authority, use `controlroom agents propose --file CONFIG_JSON --agent --actor NAME` or MCP `propose_agent_config`. Supply a complete configuration from the current `agents status` snapshot and an optional configuration revision. Use `--brief-file MARKDOWN` or MCP `workerBrief` to include project worker guidance in the proposal; omission preserves the current brief. The human reviews the diff in Agents and applies or discards it. Never claim the proposal is active before it is applied, invoke human-only configuration actions as an agent, or reuse a stale proposal.
